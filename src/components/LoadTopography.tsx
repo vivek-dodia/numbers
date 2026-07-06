@@ -299,7 +299,7 @@ export default function LoadTopography({ overview }: { overview: Overview }) {
 
       <div
         ref={boxRef}
-        className={`border border-ink flex-1 min-h-0 relative overflow-hidden select-none ${
+        className={`border border-ink flex-1 min-h-[300px] relative overflow-hidden select-none ${
           drag.current ? "cursor-grabbing" : "cursor-grab"
         }`}
         onMouseDown={onDown}
