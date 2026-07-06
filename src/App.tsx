@@ -4,7 +4,6 @@ import * as api from "./lib/api";
 import { PERIODS, computeOverview } from "./lib/metrics";
 
 import Loading from "./components/Loading";
-import Masthead from "./components/Masthead";
 import StatusBar from "./components/StatusBar";
 import CoreVitals from "./components/CoreVitals";
 import ResourceMatrix from "./components/ResourceMatrix";
@@ -117,8 +116,7 @@ function Dashboard({
   return (
     <div className="min-h-screen flex flex-col">
       <div className="mx-auto w-full max-w-[1720px] px-5 md:px-10 xl:px-14 py-2 flex-1 flex flex-col">
-        <Masthead title="NUMBERS" compact />
-        <div className="rule mb-1" />
+        <div className="rule mt-1 mb-3" />
 
         <StatusBar
           session={session}

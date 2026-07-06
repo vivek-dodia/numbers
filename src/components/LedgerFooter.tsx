@@ -15,10 +15,22 @@ export default function LedgerFooter({ overview, activityCount }: { overview: Ov
     <footer className="text-center pt-4 pb-3">
       <div className="rule rule-faint mb-3" />
       <div className="text-[12px] uppercase tracking-[0.08em]">
-        END OF LEDGER // VERIFIED CHECKSUM: <span className="hot">0x{checksum(overview)}</span>
+        <span className="hot">NUMBERS</span> // END OF LEDGER // VERIFIED CHECKSUM:{" "}
+        <span className="hot">0x{checksum(overview)}</span>
       </div>
       <div className="text-[11px] italic text-dim mt-1">
         {activityCount.toLocaleString("en-US")} RECORDS ON FILE · SYSTEM SECURE
+      </div>
+      <div className="text-[11px] text-dim mt-1 tracking-[0.04em]">
+        opensource available at{" "}
+        <a
+          href="https://github.com/vivek-dodia/numbers"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-ink"
+        >
+          github.com/vivek-dodia/numbers
+        </a>
       </div>
     </footer>
   );
