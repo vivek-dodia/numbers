@@ -4,7 +4,6 @@ import * as api from "./lib/api";
 import { PERIODS, computeOverview } from "./lib/metrics";
 
 import Loading from "./components/Loading";
-import LockScreen from "./components/LockScreen";
 import StatusBar from "./components/StatusBar";
 import CoreVitals from "./components/CoreVitals";
 import ResourceMatrix from "./components/ResourceMatrix";
@@ -22,11 +21,7 @@ interface Data {
   athleteName: string;
 }
 
-type Screen =
-  | { kind: "loading"; label?: string }
-  | { kind: "locked" }
-  | { kind: "error" }
-  | { kind: "dashboard" };
+type Screen = { kind: "loading"; label?: string } | { kind: "error" } | { kind: "dashboard" };
 
 export default function App() {
   const [data, setData] = useState<Data | null>(null);
@@ -44,10 +39,6 @@ export default function App() {
     setError(null);
     try {
       let s = await api.getSession();
-      if ("locked" in s) {
-        setScreen({ kind: "locked" });
-        return;
-      }
       if (!s.authenticated) {
         if (s.authMode === "apikey") {
           await api.apiKeyLogin();
@@ -55,7 +46,7 @@ export default function App() {
         } else {
           throw new Error(
             s.authMode === "oauth"
-              ? "OAUTH MODE NEEDS INTERACTIVE LOGIN — SET INTERVALS_API_KEY IN .ENV"
+              ? "OAUTH MODE NEEDS INTERACTIVE LOGIN — SET INTERVALS_API_KEY"
               : "NO CREDENTIALS FOUND IN .ENV",
           );
         }
@@ -74,7 +65,6 @@ export default function App() {
   }
 
   if (screen.kind === "loading") return <Loading label={screen.label} />;
-  if (screen.kind === "locked") return <LockScreen onUnlocked={boot} />;
   if (screen.kind === "error" || !data) {
     return (
       <div className="min-h-screen grid place-items-center px-6 text-center">

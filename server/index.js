@@ -20,12 +20,10 @@ const {
   ATHLETE_ID = "0",
   SESSION_SECRET = "dev-insecure-secret-change-me",
   CLIENT_ORIGIN = "http://localhost:5173",
-  SITE_PASSWORD = "",
   PORT = 3001,
 } = process.env;
 
 const IS_PROD = process.env.NODE_ENV === "production";
-const GATED = Boolean(SITE_PASSWORD);
 const OAUTH_CONFIGURED = Boolean(INTERVALS_CLIENT_ID && INTERVALS_CLIENT_SECRET);
 const API_KEY_CONFIGURED = Boolean(INTERVALS_API_KEY);
 // Auth mode the frontend should present: OAuth popup wins when available.
@@ -159,27 +157,8 @@ app.post("/auth/logout", (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
 });
 
-// ── Access gate ─────────────────────────────────────────────────────────────
-// If SITE_PASSWORD is set, data endpoints require an unlocked session.
-const PW_HASH = SITE_PASSWORD ? crypto.createHash("sha256").update(SITE_PASSWORD).digest("hex") : "";
-
-app.post("/api/unlock", (req, res) => {
-  if (!GATED) return res.json({ ok: true });
-  const pw = (req.body && req.body.password) || "";
-  if (crypto.createHash("sha256").update(String(pw)).digest("hex") !== PW_HASH) {
-    return res.status(401).json({ error: "ACCESS DENIED" });
-  }
-  req.session.unlocked = true;
-  res.json({ ok: true });
-});
-
-function requireUnlock(req, res, next) {
-  if (!GATED || req.session.unlocked) return next();
-  res.status(401).json({ error: "locked" });
-}
-
 // Session/auth state for the SPA to read on load.
-app.get("/api/session", requireUnlock, (req, res) => {
+app.get("/api/session", (req, res) => {
   res.json({
     authenticated: Boolean(req.session.accessToken || req.session.authViaKey),
     athlete: req.session.athlete || null,
@@ -226,14 +205,14 @@ async function forward(req, res, apiPath, params = {}) {
 // NOTE: no raw /api/athlete proxy — the intervals.icu profile object contains
 // icu_api_key, so exposing it would leak the key. Name/id come from /api/session.
 
-app.get("/api/activities", requireUnlock, requireAuth, (req, res) =>
+app.get("/api/activities", requireAuth, (req, res) =>
   forward(req, res, `/athlete/${athleteId(req)}/activities`, {
     oldest: req.query.oldest,
     newest: req.query.newest,
   }),
 );
 
-app.get("/api/wellness", requireUnlock, requireAuth, (req, res) =>
+app.get("/api/wellness", requireAuth, (req, res) =>
   forward(req, res, `/athlete/${athleteId(req)}/wellness`, {
     oldest: req.query.oldest,
     newest: req.query.newest,

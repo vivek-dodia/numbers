@@ -6,23 +6,8 @@ async function getJSON<T>(url: string): Promise<T> {
   return r.json() as Promise<T>;
 }
 
-// Returns the session, or { locked: true } if the site password gate is on and
-// this browser hasn't unlocked yet.
-export async function getSession(): Promise<SessionState | { locked: true }> {
-  const r = await fetch("/api/session", { credentials: "include" });
-  if (r.status === 401) return { locked: true };
-  if (!r.ok) throw new Error(`/api/session → ${r.status}`);
-  return r.json();
-}
-
-export async function unlock(password: string): Promise<boolean> {
-  const r = await fetch("/api/unlock", {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password }),
-  });
-  return r.ok;
+export function getSession(): Promise<SessionState> {
+  return getJSON<SessionState>("/api/session");
 }
 
 export async function apiKeyLogin(): Promise<{ ok: boolean; athlete: { id: string; name: string } }> {
