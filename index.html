@@ -7,11 +7,13 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>NUMBERS · intervals.icu</title>
     <script>
-      // Apply saved theme before paint to avoid a flash.
+      // Warm mode is the default; only "print" opts out. Applied before paint.
       try {
-        if (localStorage.getItem("numbers-theme") === "warm")
+        if (localStorage.getItem("numbers-theme") !== "print")
           document.documentElement.setAttribute("data-theme", "warm");
-      } catch (e) {}
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "warm");
+      }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

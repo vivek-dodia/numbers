@@ -12,7 +12,8 @@ export default function ThemeToggle() {
   const [warm, setWarm] = useState(false);
 
   useEffect(() => {
-    const w = localStorage.getItem(KEY) === "warm";
+    // Warm is the default; only an explicit "print" choice opts out.
+    const w = localStorage.getItem(KEY) !== "print";
     setWarm(w);
     apply(w);
   }, []);
