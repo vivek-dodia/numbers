@@ -202,7 +202,8 @@ async function forward(req, res, apiPath, params = {}) {
   }
 }
 
-app.get("/api/athlete", requireAuth, (req, res) => forward(req, res, `/athlete/${athleteId(req)}`));
+// NOTE: no raw /api/athlete proxy — the intervals.icu profile object contains
+// icu_api_key, so exposing it would leak the key. Name/id come from /api/session.
 
 app.get("/api/activities", requireAuth, (req, res) =>
   forward(req, res, `/athlete/${athleteId(req)}/activities`, {

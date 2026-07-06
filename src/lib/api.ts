@@ -1,4 +1,4 @@
-import type { Activity, AthleteProfile, SessionState, Wellness } from "../types";
+import type { Activity, SessionState, Wellness } from "../types";
 
 async function getJSON<T>(url: string): Promise<T> {
   const r = await fetch(url, { credentials: "include" });
@@ -21,10 +21,6 @@ export async function apiKeyLogin(): Promise<{ ok: boolean; athlete: { id: strin
 
 export async function logout(): Promise<void> {
   await fetch("/auth/logout", { method: "POST", credentials: "include" });
-}
-
-export function getAthlete(): Promise<AthleteProfile> {
-  return getJSON<AthleteProfile>("/api/athlete");
 }
 
 const iso = (d: Date) => d.toISOString().slice(0, 10);
