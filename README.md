@@ -35,8 +35,23 @@ npm run build && npm start   # production build served at http://localhost:3001
 The app auto-authenticates from the server-side `.env` key on load — no login
 screen. Credentials never reach the browser.
 
+## Deploy on Vercel
+
+Import the repo (framework preset: **Vite**) and add two environment variables:
+
+| Variable            | Example    |
+| ------------------- | ---------- |
+| `INTERVALS_API_KEY` | your key   |
+| `ATHLETE_ID`        | `iXXXXXX`  |
+
+The `/api/*` serverless functions read those and proxy intervals.icu, so the key
+stays server-side. Local dev keeps using the Express server in `server/`.
+
+> ⚠️ The deployed URL serves your training data to anyone who opens it — there's
+> no per-visitor auth. Keep the URL private, or ask for a password gate.
+
 ## Notes
 
-- OAuth ("Log in with intervals.icu") is wired in the backend but optional; the
-  API key path is the default. Leave the OAuth vars blank to use the key.
+- OAuth ("Log in with intervals.icu") is wired in the local Express backend but
+  optional; the API key path is the default. Leave the OAuth vars blank.
 - `.env` is gitignored — only `.env.example` is committed.
