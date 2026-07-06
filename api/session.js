@@ -1,8 +1,9 @@
-import { ATHLETE_ID, KEY, authHeader, API_BASE } from "./_intervals.js";
+import { ATHLETE_ID, KEY, authHeader, API_BASE, requireUnlock } from "./_intervals.js";
 
 // The SPA probes this on boot. With a server-side key there's no login step —
 // we resolve the athlete and report authenticated straight away.
-export default async function handler(_req, res) {
+export default async function handler(req, res) {
+  if (!requireUnlock(req, res)) return;
   if (!KEY) return res.json({ authenticated: false, athlete: null, authMode: "none" });
   try {
     const r = await fetch(`${API_BASE}/athlete/${ATHLETE_ID}`, {
