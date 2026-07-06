@@ -35,11 +35,13 @@ export default function SectorDensity({ activities }: { activities: Activity[] }
   }
   const peak = Math.max(1, ...cells.map((c) => c.load));
 
+  // Ink at increasing opacity (empty = transparent) so cells blend with the
+  // page/video background and re-skin with the theme.
   const shade = (load: number): string => {
-    if (load <= 0) return "#ffffff";
+    if (load <= 0) return "transparent";
     const t = Math.min(1, load / peak);
-    const step = Math.ceil(t * 5); // 1..5
-    return ["#ffffff", "#d9d9d9", "#a6a6a6", "#737373", "#3f3f3f", "#0a0a0a"][step];
+    const pct = [16, 34, 56, 78, 100][Math.ceil(t * 5) - 1] ?? 100;
+    return `color-mix(in srgb, var(--color-ink) ${pct}%, transparent)`;
   };
 
   const onEnter = (e: React.MouseEvent, c: { key: string; load: number }) => {
@@ -69,7 +71,7 @@ export default function SectorDensity({ activities }: { activities: Activity[] }
         {cells.map((c) => (
           <div
             key={c.key}
-            className="aspect-square border border-hair cursor-help"
+            className="aspect-square cursor-help"
             style={{ background: shade(c.load) }}
             onMouseEnter={(e) => onEnter(e, c)}
           />
@@ -77,7 +79,7 @@ export default function SectorDensity({ activities }: { activities: Activity[] }
 
         {hover && (
           <div
-            className={`absolute -translate-x-1/2 ${hover.below ? "" : "-translate-y-full"} pointer-events-none z-40 whitespace-nowrap border border-ink bg-paper px-2 py-1 text-[12px] uppercase tracking-[0.04em] shadow-[3px_3px_0_0_rgba(10,10,10,0.16)]`}
+            className={`tipbox absolute -translate-x-1/2 ${hover.below ? "" : "-translate-y-full"} pointer-events-none z-40 whitespace-nowrap px-2 py-1 text-[12px] uppercase tracking-[0.04em]`}
             style={{ left: hover.x, top: hover.y }}
           >
             {fmtDate(hover.date)} ·{" "}

@@ -11,7 +11,8 @@ const AX = 1.7; // week axis spread
 const AY = 1.0; // weekday axis spread
 const AZ = 0.62; // height
 
-const SHADES = ["#cccccc", "#a6a6a6", "#808080", "#5a5a5a", "#333333", "#0a0a0a"];
+// Per-height stroke opacity (ink over paper) — re-skins with the theme.
+const SHADE_OP = [0.22, 0.38, 0.54, 0.7, 0.85, 1];
 
 // Default viewpoint + a readable orbit envelope so it can't flatten out or
 // spin around backwards.
@@ -314,17 +315,17 @@ export default function LoadTopography({ overview }: { overview: Overview }) {
           setEl(EL0);
         }}
       >
-        <svg viewBox={`0 0 ${size.w} ${size.h}`} width="100%" height="100%" className="block absolute inset-0">
-          <path d={scene.floor} fill="none" stroke="#e6e6e6" strokeWidth="1" />
+        <svg viewBox={`0 0 ${size.w} ${size.h}`} width="100%" height="100%" className="block absolute inset-0 text-ink">
+          <path d={scene.floor} fill="none" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" />
           {[0, 1, 2, 3, 4, 5].map((lv) => (
-            <path key={lv} d={scene.paths[lv] ?? ""} fill="none" stroke={SHADES[lv]} strokeWidth="1" />
+            <path key={lv} d={scene.paths[lv] ?? ""} fill="none" stroke="currentColor" strokeOpacity={SHADE_OP[lv]} strokeWidth="1" />
           ))}
-          {hover && <circle cx={hover.px} cy={hover.py} r={3.5} fill="#0a0a0a" />}
+          {hover && <circle cx={hover.px} cy={hover.py} r={3.5} fill="currentColor" />}
         </svg>
 
         {hover && (
           <div
-            className={`absolute -translate-x-1/2 ${hover.py < 42 ? "" : "-translate-y-full"} pointer-events-none whitespace-nowrap border border-ink bg-paper px-2 py-1 text-[12px] uppercase tracking-[0.04em] shadow-[3px_3px_0_0_rgba(10,10,10,0.16)]`}
+            className={`tipbox absolute -translate-x-1/2 ${hover.py < 42 ? "" : "-translate-y-full"} pointer-events-none whitespace-nowrap px-2 py-1 text-[12px] uppercase tracking-[0.04em]`}
             style={{ left: Math.max(60, Math.min(size.w - 60, hover.px)), top: hover.py < 42 ? hover.py + 12 : hover.py - 8 }}
           >
             {WDNAME[hover.wd]} {fmtDate(hover.date)} · <span className="hot">{Math.round(hover.load)}</span> TSS

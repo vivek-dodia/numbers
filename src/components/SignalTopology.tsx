@@ -143,7 +143,7 @@ export default function SignalTopology({ overview: o }: { overview: Overview }) 
                 }`}
               >
                 {m.icon}
-                <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-1 z-40 whitespace-nowrap border border-ink bg-paper px-1.5 py-0.5 text-[11px] tracking-[0.04em] text-ink opacity-0 group-hover:opacity-100 transition-opacity shadow-[2px_2px_0_0_rgba(10,10,10,0.16)]">
+                <span className="tipbox pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-1 z-40 whitespace-nowrap px-1.5 py-0.5 text-[11px] tracking-[0.04em] opacity-0 group-hover:opacity-100 transition-opacity">
                   {m.key} · {m.unit}
                 </span>
               </button>
@@ -154,11 +154,11 @@ export default function SignalTopology({ overview: o }: { overview: Overview }) 
       <div className="rule mt-2 mb-3" />
 
       <div ref={boxRef} className="border border-ink relative cursor-crosshair" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
-        <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="170" preserveAspectRatio="none" className="block">
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="170" preserveAspectRatio="none" className="block text-ink">
           {[0.25, 0.5, 0.75].map((g) => (
-            <line key={g} x1={PAD} x2={W - PAD} y1={H * g} y2={H * g} stroke="#000" strokeWidth="1" strokeDasharray="2 4" opacity="0.45" />
+            <line key={g} x1={PAD} x2={W - PAD} y1={H * g} y2={H * g} stroke="currentColor" strokeWidth="1" strokeDasharray="2 4" opacity="0.45" />
           ))}
-          {pts && <polyline points={pts} fill="none" stroke="#0a0a0a" strokeWidth="1.4" />}
+          {pts && <polyline points={pts} fill="none" stroke="currentColor" strokeWidth="1.4" />}
         </svg>
 
         {hover != null && series[hover] && (
@@ -166,7 +166,7 @@ export default function SignalTopology({ overview: o }: { overview: Overview }) 
             <div className="absolute top-0 bottom-0 border-l border-dashed border-ink/50" style={{ left: `${hx}%` }} />
             <div className="absolute size-2 -translate-x-1/2 -translate-y-1/2 bg-ink rounded-full" style={{ left: `${hx}%`, top: `${hy}%` }} />
             <div
-              className={`absolute -translate-x-1/2 ${hy < 28 ? "" : "-translate-y-full"} whitespace-nowrap border border-ink bg-paper px-2 py-1 text-[12px] uppercase tracking-[0.04em] shadow-[3px_3px_0_0_rgba(10,10,10,0.16)]`}
+              className={`tipbox absolute -translate-x-1/2 ${hy < 28 ? "" : "-translate-y-full"} whitespace-nowrap px-2 py-1 text-[12px] uppercase tracking-[0.04em]`}
               style={{ left: `${Math.max(8, Math.min(92, hx))}%`, top: `${hy}%`, marginTop: hy < 28 ? 8 : -8 }}
             >
               {fmtDate(series[hover].date)} · <span className="hot">{def.fmt(series[hover].value)}</span> {def.unit}

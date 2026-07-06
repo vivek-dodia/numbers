@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PERIODS } from "../lib/metrics";
 import type { PeriodKey } from "../types";
+import ThemeToggle from "./ThemeToggle";
 
 function useClock(): string {
   const [t, setT] = useState(() => new Date());
@@ -50,6 +51,7 @@ export default function StatusBar({ session, loc, online, period, onPeriod }: Pr
             </button>
           );
         })}
+        <ThemeToggle />
       </div>
     </div>
   );

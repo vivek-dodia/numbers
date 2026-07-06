@@ -16,6 +16,16 @@
   :root {
     color-scheme: light;
   }
+  /* "Warm" skin — dark film grade: near-black field, warm cream ink, with an
+     orange glow + cyan light-streak (refs are grainy, backlit, cross-processed). */
+  :root[data-theme="warm"] {
+    color-scheme: dark;
+    --color-paper: #0b0e10; /* near-black, faint cool */
+    --color-ink: #ece1d0; /* warm cream — text + mesh */
+    --color-dim: #8d8474;
+    --color-faint: #595144;
+    --color-hair: rgba(236, 225, 208, 0.34); /* soft white node borders on dark */
+  }
   html,
   body,
   #root {
@@ -32,8 +42,45 @@
     text-rendering: geometricPrecision;
   }
   ::selection {
-    background: #000;
-    color: #fff;
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /* Film grain — off in print mode, on for the warm skin. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    mix-blend-mode: overlay;
+  }
+  :root[data-theme="warm"] body::after {
+    opacity: 0.55;
+  }
+  /* Warm skin: full-cover film loop behind the ledger, with a dark scrim so
+     the cream text stays legible over the bright zones. */
+  :root[data-theme="warm"] body {
+    background-image:
+      linear-gradient(rgba(9, 11, 12, 0.44), rgba(9, 11, 12, 0.54)),
+      url("/warm-bg.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  /* Inverted stamps glow orange in warm mode, like the backlit subject. */
+  :root[data-theme="warm"] .hot-inv {
+    background: #e0631f;
+    color: #140b05;
+  }
+  /* Editorial italic annotations in warm mode. */
+  :root[data-theme="warm"] .sec-h .meta {
+    font-style: italic;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -103,6 +150,14 @@
     pointer-events: none;
   }
 
+  /* Hover tips stay a white ledger note in every theme. */
+  .tipbox {
+    background: #ffffff;
+    color: #0a0a0a;
+    border: 1px solid #0a0a0a;
+    box-shadow: 3px 3px 0 0 rgba(10, 10, 10, 0.2);
+  }
+
   /* Hover/focus explanation popup, styled like a stamped ledger note. */
   .tip {
     position: absolute;
@@ -111,14 +166,14 @@
     z-index: 40;
     width: min(300px, 80vw);
     padding: 8px 11px;
-    background: var(--color-paper);
-    border: 1px solid var(--color-ink);
-    box-shadow: 3px 3px 0 0 rgba(10, 10, 10, 0.16);
+    background: #ffffff;
+    border: 1px solid #0a0a0a;
+    box-shadow: 3px 3px 0 0 rgba(10, 10, 10, 0.2);
     font-size: 12.5px;
     line-height: 1.5;
     letter-spacing: 0.005em;
     text-transform: none;
-    color: var(--color-ink);
+    color: #0a0a0a;
     text-align: left;
     opacity: 0;
     visibility: hidden;
@@ -150,16 +205,14 @@
     white-space: nowrap;
   }
 
-  /* Dither texture for capacity-bar tails: a fine checker with faint CMYK specks */
+  /* Dither texture for capacity-bar tails: a fine ink checker over paper */
   .dither {
-    background-color: #eaeaea;
-    background-image:
-      repeating-conic-gradient(#0a0a0a 0deg 90deg, transparent 90deg 180deg),
-      linear-gradient(90deg, rgba(0, 180, 255, 0.5), rgba(255, 120, 0, 0.4));
-    background-size:
-      3px 3px,
-      100% 100%;
-    background-blend-mode: normal, multiply;
+    background-color: color-mix(in oklab, var(--color-ink) 12%, var(--color-paper));
+    background-image: repeating-conic-gradient(
+      var(--color-ink) 0deg 90deg,
+      transparent 90deg 180deg
+    );
+    background-size: 3px 3px;
   }
 }
 
