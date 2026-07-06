@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+/* ── SYSOP ledger: monochrome dot-matrix terminal printout ─────────────── */
+@theme {
+  --color-paper: #ffffff;
+  --color-ink: #0a0a0a;
+  --color-dim: #6b6b6b;
+  --color-faint: #9b9b9b;
+  --color-hair: #cfcfcf;
+
+  --font-pixel: "Press Start 2P", monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+  }
+  ::selection {
+    background: #000;
+    color: #fff;
+  }
+}
+
+@layer components {
+  /* Dotted horizontal rule, like a receipt separator */
+  .rule {
+    height: 2px;
+    background-image: radial-gradient(circle, var(--color-ink) 0.9px, transparent 1px);
+    background-size: 6px 2px;
+    background-repeat: repeat-x;
+    background-position: left center;
+  }
+  .rule-faint {
+    background-image: radial-gradient(circle, var(--color-faint) 0.9px, transparent 1px);
+  }
+
+  /* Section header: bold label left, meta right */
+  .sec-h {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  .sec-h .meta {
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: 0.06em;
+  }
+
+  /* Key/value row */
+  .kv {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 2.5px 0;
+    letter-spacing: 0.02em;
+  }
+  .kv .k {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .kv .v {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Glitchy dot-matrix masthead: chromatic offset + scanline gaps */
+  .glitch {
+    position: relative;
+    display: inline-block;
+    font-family: var(--font-pixel);
+    color: #0a0a0a;
+    text-shadow:
+      -2px -2px 0 #12d0e6,
+      2px 2px 0 #ff2f6d;
+    line-height: 1;
+  }
+  .glitch::after {
+    content: "";
+    position: absolute;
+    inset: -4px 0;
+    background: repeating-linear-gradient(0deg, #fff 0 1.5px, transparent 1.5px 5px);
+    pointer-events: none;
+  }
+
+  /* Hover/focus explanation popup, styled like a stamped ledger note. */
+  .tip {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 4px);
+    z-index: 40;
+    width: min(300px, 80vw);
+    padding: 8px 11px;
+    background: var(--color-paper);
+    border: 1px solid var(--color-ink);
+    box-shadow: 3px 3px 0 0 rgba(10, 10, 10, 0.16);
+    font-size: 12.5px;
+    line-height: 1.5;
+    letter-spacing: 0.005em;
+    text-transform: none;
+    color: var(--color-ink);
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-2px);
+    transition:
+      opacity 0.09s ease,
+      transform 0.09s ease;
+    pointer-events: none;
+  }
+  .group:hover > .tip,
+  .group:focus-within > .tip,
+  .group:focus-visible > .tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Emphasis: couple the values that matter. .hot = weight bump; .hot-inv =
+     the single hero value, inverted like a stamped figure. */
+  .hot {
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .hot-inv {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-weight: 700;
+    padding: 0 5px;
+    white-space: nowrap;
+  }
+
+  /* Dither texture for capacity-bar tails: a fine checker with faint CMYK specks */
+  .dither {
+    background-color: #eaeaea;
+    background-image:
+      repeating-conic-gradient(#0a0a0a 0deg 90deg, transparent 90deg 180deg),
+      linear-gradient(90deg, rgba(0, 180, 255, 0.5), rgba(255, 120, 0, 0.4));
+    background-size:
+      3px 3px,
+      100% 100%;
+    background-blend-mode: normal, multiply;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
